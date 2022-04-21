@@ -1,6 +1,10 @@
 use flo_draw::*;
 use flo_draw::canvas::*;
 
+const COLOR: Color = Color::Rgba(1.0, 0.0, 0.8, 1.0);
+const ANGLE: f32 = 10.0;
+const DEPTH: i32 = 11;
+const LINE_WIDTH: f32 = 1.0;
 
 
 fn main() {
@@ -15,10 +19,16 @@ fn main() {
 
         canvas.draw(|gc| {
             gc.center_region(0.0, 0.0, 1000.0, 1000.0);
-            gc.line_width(5.0);
-            gc.stroke_color(Color::Rgba(1.0, 0.0, 0.8, 1.0));
+            gc.line_width(LINE_WIDTH);
+            gc.stroke_color(COLOR);
            
-            branch(gc, 500.0, 500.0, 1.2, 20);
+          //  gc.new_path();
+           // gc.move_to(500.0, 150.0);
+           // gc.line_to(500.0 , 300.0);
+          //  gc.close_path();
+          //  gc.stroke();    
+
+            branch(gc, 500.0, 300.0, 0.0, DEPTH);
         });
     
 
@@ -26,20 +36,21 @@ fn main() {
 }
 
 
-fn branch(gc: &mut CanvasGraphicsContext, x : f32 ,y : f32, reduction_factor: f32,mut n: i32) {
+fn branch(gc: &mut CanvasGraphicsContext, x : f32 ,y : f32, angle: f32, n: i32) {
+            let x2 = x + angle.to_radians().sin() * n as f32 * 15.0;
+            let y2 = x - angle.to_radians().cos() * n as f32 * 15.0;
             gc.new_path();
-            gc.circle(x, y, n as f32 * 20.0);
-           // gc.line_to(x , y);
-           // gc.close_path();
-            gc.stroke();
+            gc.move_to(x, y);
+            gc.line_to(x2 , y2);
+            gc.close_path();
+            gc.stroke();    
 
             println!("x: {} y: {}", x, y);
             if n == 0 {
               return;
              }
-            n -= 1;
-            branch(gc, x, y, reduction_factor, n )
-    
+            branch(gc, x2, y2, angle - ANGLE, n-1);
+            branch(gc, x2, y2, angle + ANGLE, n-1);
 }
 
 
