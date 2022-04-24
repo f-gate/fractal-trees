@@ -1,8 +1,12 @@
 Simple Fractal Generator
-Uses simple clap features for cli interface.
+
+written with flo_draw for canvas,
+clap for cli
+
 hardcoded colors.
 window sizing needs work.
 
+QUICK START:
 to run with defaults:
 cargo run 
 

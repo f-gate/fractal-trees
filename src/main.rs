@@ -38,10 +38,15 @@ fn main() {
 
         if let Ok(f) = matches.value_of("angle").unwrap().parse::<f32>() {
             tree.angle_change = f;
+        } else {
+            panic!("INVALID ANGLE");
         }
+
     
         if let Ok(n) = matches.value_of("depth").unwrap().parse::<i32>() {
             tree.depth = n;
+        } else { 
+            panic!("INVALID DEPTH");
         }
 
     with_2d_graphics( move || {
