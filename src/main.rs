@@ -6,7 +6,6 @@ use std::*;
 
 use clap::*;
 
-const COLOR: Color = Color::Rgba(1.0, 0.0, 0.8, 1.0);
 const LINE_WIDTH: f32 = 2.0;
 
 struct TreeProps {

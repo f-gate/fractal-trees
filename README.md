@@ -1,6 +1,7 @@
 Simple Fractal Generator
 Uses simple clap features for cli interface.
 hardcoded colors.
+window sizing needs work.
 
 to run with defaults:
 cargo run 
