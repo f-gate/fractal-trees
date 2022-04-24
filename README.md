@@ -1,5 +1,9 @@
 Simple Fractal Generator
+Uses simple clap features for cli interface.
+hardcoded colors.
 
+to run with defaults:
+cargo run 
 
-
-currently in progress. A project to learn rust.
+to run with custom angle and depth:
+cargo run -- --angle {angle} --depth {depth}

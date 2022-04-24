@@ -7,8 +7,6 @@ use std::*;
 use clap::*;
 
 const COLOR: Color = Color::Rgba(1.0, 0.0, 0.8, 1.0);
-const ANGLE_START: f32 = 15.0;
-const DEPTH: i32 = 15;
 const LINE_WIDTH: f32 = 2.0;
 
 struct TreeProps {
@@ -22,54 +20,39 @@ fn main() {
         .about("draws fractal tree")
         .author("gatsey");
 
-    let depth = Arg::new("depth")
+    let depth_arg = Arg::new("depth")
         .long("depth") 
-        .default_value("10")
-        .help("factorial for branch iteration, default 10 i32")
-        .required(true);
+        .default_value("14")
+        .help("factorial for branch iteration, default 10 i32");
     
-    let angle_start = Arg::new("angle")
+    let angle_start_arg = Arg::new("angle")
         .long("angle") 
-        .default_value("10.0")
-        .help("change angle for branch iteration, default 20.0 float")
-        .required(true);
+        .default_value("20.0")
+        .help("change angle for branch iteration, default 20.0 float");
 
-    // now add in the argument we want to parse
-    let app = app.arg(angle_start);
-    let app = app.arg(depth);
+    let app = app.arg(angle_start_arg);
+    let app = app.arg(depth_arg);
 
     let matches = app.get_matches();
 
-    // Extract the actual name
-    if let Some(n) = matches.value_of("angle") {
-        //let angle = n.parse::<f32>().expect("angle is not a valid float");
-        println!("{:?}", n);
-    }
-    if let Some(i) = matches.value_of("depth") {
-     //let depth = i.parse::<i32>().expect("depth is not a valid int");
-         println!("{:?}", i);
-    }
+    let mut tree: TreeProps = TreeProps {angle_change: 0.0, depth: 0};
 
-    let tree: TreeProps = TreeProps {
-        angle_change: 20.0,
-        depth: 15,
-    };
+        if let Ok(f) = matches.value_of("angle").unwrap().parse::<f32>() {
+            tree.angle_change = f;
+        }
+    
+        if let Ok(n) = matches.value_of("depth").unwrap().parse::<i32>() {
+            tree.depth = n;
+        }
 
     with_2d_graphics( move || {
-
-        let mut window_properties       = WindowProperties::from(&"Fractal Tree Generator");
-      //  window_properties.mouse_pointer = BindRef::from(bind(MousePointer::None));
-        
+        let mut window_properties = WindowProperties::from(&"Fractal Tree Generator");
         
         let (canvas, events) = create_canvas_window_with_events(window_properties);
 
-
-
         canvas.draw(|gc| {
-            let SCR_HEIGHT = 100.0*DEPTH as f32;
-            gc.stroke_color(Color::Rgba(1.0, 1.0, 1.0, 1.0));
-           // gc.draw_rect();
-
+            let SCR_HEIGHT = 100.0*tree.depth as f32;
+          
             gc.line_width(LINE_WIDTH);
             
             gc.canvas_height(SCR_HEIGHT);
@@ -86,27 +69,19 @@ fn main() {
 fn get_color(n: i32) -> Color {
     if n%2 == 0 {
        return Color::Rgba(1.0, 0.0, 1.0, 1.0);
-    } else if n% 7 == 0 {
-        return Color::Rgba(0.0, 1.0, 1.0, 1.0); 
     } else if n%3 == 0 {
         return Color::Rgba(0.0, 1.0, 1.0, 1.0);
     }
     
-    Color::Rgba(1.0, 1.0, 1.0, 1.0) 
+    Color::Rgba(1.0, 0.0, 0.0, 1.0) 
 }
 
     /// Populates the branches of a tree. and draws tree
     pub fn draw_tree(gc: &mut CanvasGraphicsContext, x : f32 ,y : f32, n: i32, angle: f32, angle_change:f32) {
-        let mut color = get_color(n);
+        let color = get_color(n);
 
         let x2 = x + angle.to_radians().sin() * n as f32 * 10.0;
         let y2 = y + angle.to_radians().cos() * n as f32 * 10.0;
-
-        //let bpb = BezierPathBuilder::start(Branch{x: x, y: y});
-       // bpb.line_to(Branch{x: x2, y: y2});
-       // let path = bpb.build()
-        //slower than having stroking just once but this allows customisation of branches
-        //gc.draw_bzier_curve();
 
         gc.new_path();
         gc.stroke_color(color);
